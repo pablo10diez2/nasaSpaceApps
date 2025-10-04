@@ -1,0 +1,179 @@
+{
+  "modules": [
+    {
+      "name": "Transformer_500",
+      "type": "transformer",
+      "dim": [3, 3],
+      "cost": 50000,
+      "supplied_power": 500,
+      "description": "500kW transformer for medium-sized datacenter power needs."
+    },
+    {
+      "name": "Transformer_1000",
+      "type": "transformer",
+      "dim": [4, 4],
+      "cost": 100000,
+      "supplied_power": 1000,
+      "description": "1MW transformer for large datacenter power requirements."
+    },
+    {
+      "name": "Transformer_2000",
+      "type": "transformer",
+      "dim": [5, 5],
+      "cost": 180000,
+      "supplied_power": 2000,
+      "description": "2MW high-capacity transformer for enterprise datacenters."
+    },
+    {
+      "name": "Water_Supply_Basic",
+      "type": "water_supply",
+      "dim": [2, 2],
+      "cost": 25000,
+      "supplied_water": 200,
+      "description": "Basic water supply system for small datacenters."
+    },
+    {
+      "name": "Water_Supply_Advanced",
+      "type": "water_supply",
+      "dim": [3, 3],
+      "cost": 45000,
+      "supplied_water": 500,
+      "description": "Advanced water supply system with redundancy features."
+    },
+    {
+      "name": "Water_Treatment_Standard",
+      "type": "water_treatment",
+      "dim": [2, 3],
+      "cost": 35000,
+      "water_usage": 50,
+      "supplied_water": 150,
+      "description": "Standard water treatment plant for datacenter cooling systems."
+    },
+    {
+      "name": "Water_Treatment_Recycling",
+      "type": "water_treatment",
+      "dim": [3, 4],
+      "cost": 65000,
+      "water_usage": 80,
+      "supplied_water": 300,
+      "description": "Advanced water recycling system with 90% efficiency."
+    },
+    {
+      "name": "Water_Chiller_Small",
+      "type": "water_chiller",
+      "dim": [2, 2],
+      "cost": 30000,
+      "water_usage": 100,
+      "power_usage": 50,
+      "description": "Small water chiller for cooling up to 500kW of IT load."
+    },
+    {
+      "name": "Water_Chiller_Medium",
+      "type": "water_chiller",
+      "dim": [3, 3],
+      "cost": 60000,
+      "water_usage": 200,
+      "power_usage": 100,
+      "description": "Medium water chiller for cooling up to 1MW of IT load."
+    },
+    {
+      "name": "Water_Chiller_Large",
+      "type": "water_chiller",
+      "dim": [4, 4],
+      "cost": 120000,
+      "water_usage": 400,
+      "power_usage": 200,
+      "description": "Large water chiller for cooling up to 2MW of IT load."
+    },
+    {
+      "name": "Network_Rack_Basic",
+      "type": "network_rack",
+      "dim": [1, 1],
+      "cost": 15000,
+      "power_usage": 5,
+      "water_usage": 2,
+      "network_capacity": 100,
+      "description": "Basic network rack with 100Gbps capacity."
+    },
+    {
+      "name": "Network_Rack_Advanced",
+      "type": "network_rack",
+      "dim": [1, 2],
+      "cost": 35000,
+      "power_usage": 10,
+      "water_usage": 5,
+      "network_capacity": 400,
+      "description": "Advanced network rack with 400Gbps capacity and redundancy."
+    },
+    {
+      "name": "Network_Rack_Enterprise",
+      "type": "network_rack",
+      "dim": [2, 2],
+      "cost": 75000,
+      "power_usage": 20,
+      "water_usage": 10,
+      "network_capacity": 1000,
+      "description": "Enterprise-grade network rack with 1Tbps capacity and full redundancy."
+    },
+    {
+      "name": "Storage_Rack_HDD",
+      "type": "storage_rack",
+      "dim": [1, 1],
+      "cost": 20000,
+      "power_usage": 8,
+      "water_usage": 4,
+      "storage_capacity": 500,
+      "description": "HDD storage rack with 500TB capacity."
+    },
+    {
+      "name": "Storage_Rack_SSD",
+      "type": "storage_rack",
+      "dim": [1, 1],
+      "cost": 40000,
+      "power_usage": 12,
+      "water_usage": 6,
+      "storage_capacity": 200,
+      "description": "SSD storage rack with 200TB capacity and high IOPS."
+    },
+    {
+      "name": "Storage_Rack_NVMe",
+      "type": "storage_rack",
+      "dim": [1, 2],
+      "cost": 80000,
+      "power_usage": 20,
+      "water_usage": 10,
+      "storage_capacity": 300,
+      "description": "NVMe storage rack with 300TB capacity and ultra-low latency."
+    },
+    {
+      "name": "Server_Rack_Standard",
+      "type": "server_rack",
+      "dim": [1, 1],
+      "cost": 25000,
+      "power_usage": 15,
+      "water_usage": 8,
+      "processing_power": 100,
+      "description": "Standard server rack with 100 TFLOPS of processing power."
+    },
+    {
+      "name": "Server_Rack_HighDensity",
+      "type": "server_rack",
+      "dim": [1, 1],
+      "cost": 50000,
+      "power_usage": 30,
+      "water_usage": 15,
+      "processing_power": 250,
+      "description": "High-density server rack with 250 TFLOPS of processing power."
+    },
+    {
+      "name": "Server_Rack_GPU",
+      "type": "server_rack",
+      "dim": [1, 2],
+      "cost": 120000,
+      "power_usage": 60,
+      "water_usage": 30,
+      "processing_power": 1000,
+      "description": "GPU-accelerated server rack with 1 PFLOPS of processing power."
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "styles": [
+    {
+      "id": "server_squares",
+      "name": "Server Squares",
+      "description": "Optimized for maximum compute density with efficient cooling and power distribution.",
+      "focus": "processing",
+      "recommended_modules": [
+        "Transformer_1000",
+        "Water_Supply_Advanced",
+        "Water_Chiller_Medium",
+        "Server_Rack_HighDensity",
+        "Network_Rack_Advanced"
+      ]
+    },
+    {
+      "id": "data_centres",
+      "name": "Data Centres",
+      "description": "Balanced approach with focus on storage capacity and reliability.",
+      "focus": "storage",
+      "recommended_modules": [
+        "Transformer_500",
+        "Water_Supply_Basic",
+        "Water_Chiller_Small",
+        "Storage_Rack_SSD",
+        "Network_Rack_Basic",
+        "Server_Rack_Standard"
+      ]
+    },
+    {
+      "id": "super_computers",
+      "name": "Super Computers",
+      "description": "High-performance computing focus with maximum processing power and advanced cooling.",
+      "focus": "processing",
+      "recommended_modules": [
+        "Transformer_2000",
+        "Water_Supply_Advanced",
+        "Water_Treatment_Recycling",
+        "Water_Chiller_Large",
+        "Server_Rack_GPU",
+        "Network_Rack_Enterprise"
+      ]
+    },
+    {
+      "id": "network_hub",
+      "name": "Network Hub",
+      "description": "Optimized for network throughput and connectivity with moderate compute resources.",
+      "focus": "network",
+      "recommended_modules": [
+        "Transformer_500",
+        "Water_Supply_Basic",
+        "Water_Chiller_Small",
+        "Network_Rack_Enterprise",
+        "Server_Rack_Standard"
+      ]
+    },
+    {
+      "id": "storage_cluster",
+      "name": "Storage Cluster",
+      "description": "Maximized storage capacity with efficient power usage and moderate cooling requirements.",
+      "focus": "storage",
+      "recommended_modules": [
+        "Transformer_500",
+        "Water_Supply_Basic",
+        "Water_Chiller_Small",
+        "Storage_Rack_HDD",
+        "Storage_Rack_SSD",
+        "Storage_Rack_NVMe",
+        "Network_Rack_Advanced"
+      ]
+    }
+  ]
+}
