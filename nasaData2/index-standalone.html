@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Space Habitat Builder - Standalone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            overflow: hidden;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #ui-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 300px;
+            z-index: 100;
+        }
+
+        #ui-panel h2 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px 5px 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #0099cc, #00d4ff);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+        }
+
+        .btn.danger:hover {
+            background: linear-gradient(45deg, #cc0000, #ff4444);
+        }
+
+        #info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            color: #ccc;
+            z-index: 100;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 200;
+            display: none;
+        }
+
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #object-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #222;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .object-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border-bottom: 1px solid #444;
+            font-size: 12px;
+        }
+
+        .object-item:last-child {
+            border-bottom: none;
+        }
+
+        .object-name {
+            color: #00d4ff;
+        }
+
+        .object-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 3px 8px;
+            font-size: 10px;
+        }
+
+        .demo-objects {
+            margin-top: 15px;
+            padding: 10px;
+            background: #222;
+            border-radius: 5px;
+        }
+
+        .demo-objects h3 {
+            color: #00d4ff;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .demo-btn {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            background: #444;
+            border: 1px solid #666;
+            border-radius: 3px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .demo-btn:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="canvas-container"></div>
+        
+        <div id="ui-panel">
+            <h2>🚀 Space Habitat Builder</h2>
+            
+            <button id="clear-all" class="btn danger">Clear All</button>
+            
+            <div class="demo-objects">
+                <h3>Available Models</h3>
+                <button class="demo-btn" onclick="app.loadDemoGLB('garden.glb', 'Garden')">🌱 Garden</button>
+                <button class="demo-btn" onclick="app.loadDemoGLB('bed.glb', 'Bed')">🛏️ Bed</button>
+                <button class="demo-btn" onclick="app.loadDemoModel('10781_Solar-Panels_V1.obj', 'solarPanel.mtl', 'Solar Panel')">☀️ Solar Panel</button>
+                <button class="demo-btn" onclick="app.loadDemoGLB('dna_lab.glb', 'DNA Lab')">🧬 DNA Lab</button>
+                <button class="demo-btn" onclick="app.loadDemoGLB('holo-table.glb', 'Holo Table')">📡 Holo Table</button>
+                <button class="demo-btn" onclick="app.loadDemoGLB('sci-fi_lab.glb', 'Sci-Fi Lab')">🔬 Sci-Fi Lab</button>
+                <button class="demo-btn" onclick="app.loadDemoGLB('wall.glb', 'Wall')">🧱 Wall</button>
+                <button class="demo-btn" onclick="app.loadDemoGLB('oven.glb', 'Oven')">🔥 Oven</button>
+            </div>
+            
+            <div class="control-group" style="margin-top: 15px;">
+                <button id="export-scene" class="btn">Export Scene (JSON)</button>
+                <input type="file" id="import-file" class="file-input" accept=".json" style="display: none;">
+                <button id="import-scene" class="btn">Import Scene (JSON)</button>
+            </div>
+            
+            <div id="object-list">
+                <div style="color: #666; text-align: center; padding: 10px;">
+                    No objects loaded
+                </div>
+            </div>
+        </div>
+        
+        <div id="info-panel">
+            <div><strong>Controls:</strong></div>
+            <div>• Click: Select object</div>
+            <div>• Mouse drag: Rotate camera</div>
+            <div>• Mouse wheel: Zoom in/out</div>
+            <div><strong>Camera movement:</strong></div>
+            <div>• WASD: Move camera</div>
+            <div>• Q/E: Move camera up/down</div>
+            <div><strong>Object editing:</strong></div>
+            <div>• Arrow keys: Move object</div>
+            <div>• Shift + arrows: Rotate object</div>
+            <div>• +/-: Scale object</div>
+            <div>• Delete: Remove object</div>
+            <div><strong>Scene:</strong></div>
+            <div>• Export/Import: Save/Load scene</div>
+        </div>
+        
+        <div id="loading">
+            <div class="spinner"></div>
+            <div>Loading model...</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // Versión standalone con objetos de demostración
+        class SpaceHabitatBuilder {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.controls = null;
+                this.raycaster = new THREE.Raycaster();
+                this.mouse = new THREE.Vector2();
+                this.objects = [];
+                this.selectedObject = null;
+                this.isDragging = false;
+                this.objLoader = new THREE.OBJLoader();
+                this.mtlLoader = new THREE.MTLLoader();
+                this.gltfLoader = new THREE.GLTFLoader();
+                
+                this.init();
+                this.setupEventListeners();
+                this.animate();
+            }
+
+            init() {
+                // Crear escena
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x000011);
+                
+                // Crear cámara
+                this.camera = new THREE.PerspectiveCamera(
+                    75, 
+                    window.innerWidth / window.innerHeight, 
+                    0.1, 
+                    1000
+                );
+                this.camera.position.set(10, 10, 10);
+                
+                // Crear renderer
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                this.renderer.outputEncoding = THREE.sRGBEncoding;
+                this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                this.renderer.toneMappingExposure = 1;
+                
+                document.getElementById('canvas-container').appendChild(this.renderer.domElement);
+                
+                // Crear controles de órbita
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.enableZoom = true;
+                this.controls.enablePan = true;
+                this.controls.maxPolarAngle = Math.PI / 2;
+                
+                // Configurar iluminación espacial
+                this.setupLighting();
+                
+                // Crear grid de referencia
+                this.createGrid();
+            }
+
+            setupLighting() {
+                // Luz ambiental suave
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+                this.scene.add(ambientLight);
+                
+                // Luz direccional principal (simula el sol)
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(50, 50, 50);
+                directionalLight.castShadow = true;
+                directionalLight.shadow.mapSize.width = 2048;
+                directionalLight.shadow.mapSize.height = 2048;
+                directionalLight.shadow.camera.near = 0.5;
+                directionalLight.shadow.camera.far = 500;
+                directionalLight.shadow.camera.left = -50;
+                directionalLight.shadow.camera.right = 50;
+                directionalLight.shadow.camera.top = 50;
+                directionalLight.shadow.camera.bottom = -50;
+                this.scene.add(directionalLight);
+                
+                // Luz puntual adicional para iluminar el área de construcción
+                const pointLight = new THREE.PointLight(0x00d4ff, 0.5, 100);
+                pointLight.position.set(0, 20, 0);
+                pointLight.castShadow = true;
+                this.scene.add(pointLight);
+                
+                // Efecto de estrellas en el fondo
+                this.createStarField();
+            }
+
+            createStarField() {
+                const starGeometry = new THREE.BufferGeometry();
+                const starCount = 1000;
+                const positions = new Float32Array(starCount * 3);
+                
+                for (let i = 0; i < starCount * 3; i++) {
+                    positions[i] = (Math.random() - 0.5) * 2000;
+                }
+                
+                starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const starMaterial = new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: 2,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                
+                const stars = new THREE.Points(starGeometry, starMaterial);
+                this.scene.add(stars);
+            }
+
+            createGrid() {
+                const gridHelper = new THREE.GridHelper(100, 100, 0x444444, 0x222222);
+                gridHelper.position.y = -0.1;
+                this.scene.add(gridHelper);
+                
+                // Crear plano invisible para detectar clicks
+                const planeGeometry = new THREE.PlaneGeometry(200, 200);
+                const planeMaterial = new THREE.MeshBasicMaterial({ 
+                    visible: false, 
+                    side: THREE.DoubleSide 
+                });
+                this.plane = new THREE.Mesh(planeGeometry, planeMaterial);
+                this.plane.rotation.x = -Math.PI / 2;
+                this.scene.add(this.plane);
+            }
+            setupEventListeners() {
+                // Controles básicos
+                document.getElementById('clear-all').addEventListener('click', () => {
+                    this.clearAllObjects();
+                });
+                
+                // Controles de importar/exportar escena
+                document.getElementById('export-scene').addEventListener('click', () => {
+                    this.exportScene();
+                });
+                
+                document.getElementById('import-scene').addEventListener('click', () => {
+                    document.getElementById('import-file').click();
+                });
+                
+                document.getElementById('import-file').addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.importScene(file);
+                    }
+                });
+                
+                // Controles de mouse
+                this.renderer.domElement.addEventListener('click', (event) => {
+                    this.onMouseClick(event);
+                });
+                
+                this.renderer.domElement.addEventListener('mousemove', (event) => {
+                    this.onMouseMove(event);
+                });
+                
+                this.renderer.domElement.addEventListener('mousedown', (event) => {
+                    this.isDragging = true;
+                });
+                
+                this.renderer.domElement.addEventListener('mouseup', (event) => {
+                    this.isDragging = false;
+                });
+                
+                // Controles de teclado
+                document.addEventListener('keydown', (event) => {
+                    this.onKeyDown(event);
+                });
+                
+                // Redimensionar ventana
+                window.addEventListener('resize', () => {
+                    this.onWindowResize();
+                });
+            }
+
+
+
+
+
+
+
+            onMouseClick(event) {
+                if (this.isDragging) return;
+                
+                this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                
+                // Detectar intersecciones con objetos
+                const intersects = this.raycaster.intersectObjects(this.objects);
+                
+                if (intersects.length > 0) {
+                    this.selectObject(intersects[0].object);
+                } else {
+                    this.deselectAll();
+                }
+            }
+
+            onMouseMove(event) {
+                if (!this.isDragging) return;
+                
+                this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            }
+
+            onKeyDown(event) {
+                const moveSpeed = 1;
+                const rotateSpeed = 0.1;
+                
+                // Controles de cámara (sin objeto seleccionado)
+                if (!this.selectedObject) {
+                    switch(event.code) {
+                        case 'KeyW':
+                            this.camera.position.z -= moveSpeed;
+                            break;
+                        case 'KeyS':
+                            this.camera.position.z += moveSpeed;
+                            break;
+                        case 'KeyA':
+                            this.camera.position.x -= moveSpeed;
+                            break;
+                        case 'KeyD':
+                            this.camera.position.x += moveSpeed;
+                            break;
+                        case 'KeyQ':
+                            this.camera.position.y += moveSpeed;
+                            break;
+                        case 'KeyE':
+                            this.camera.position.y -= moveSpeed;
+                            break;
+                    }
+                    return;
+                }
+                
+                // Controles de objeto (con objeto seleccionado)
+                switch(event.code) {
+                    // Movimiento de objeto con flechas
+                    case 'ArrowLeft':
+                        if (event.shiftKey) {
+                            // Shift + flecha = rotar
+                            this.selectedObject.rotation.y -= rotateSpeed;
+                        } else {
+                            // Solo flecha = mover
+                            this.selectedObject.position.x -= moveSpeed;
+                        }
+                        break;
+                    case 'ArrowRight':
+                        if (event.shiftKey) {
+                            // Shift + flecha = rotar
+                            this.selectedObject.rotation.y += rotateSpeed;
+                        } else {
+                            // Solo flecha = mover
+                            this.selectedObject.position.x += moveSpeed;
+                        }
+                        break;
+                    case 'ArrowUp':
+                        if (event.shiftKey) {
+                            // Shift + flecha = rotar
+                            this.selectedObject.rotation.x -= rotateSpeed;
+                        } else {
+                            // Solo flecha = mover hacia adelante
+                            this.selectedObject.position.z -= moveSpeed;
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (event.shiftKey) {
+                            // Shift + flecha = rotar
+                            this.selectedObject.rotation.x += rotateSpeed;
+                        } else {
+                            // Solo flecha = mover hacia atrás
+                            this.selectedObject.position.z += moveSpeed;
+                        }
+                        break;
+                    
+                    // Movimiento vertical con WASD cuando hay objeto seleccionado
+                    case 'KeyW':
+                        this.selectedObject.position.y += moveSpeed;
+                        break;
+                    case 'KeyS':
+                        // Bajar pero no atravesar el suelo
+                        const box = new THREE.Box3().setFromObject(this.selectedObject);
+                        const minY = box.min.y;
+                        if (minY - moveSpeed >= 0) {
+                            this.selectedObject.position.y -= moveSpeed;
+                        } else {
+                            this.selectedObject.position.y = -box.min.y + this.selectedObject.position.y;
+                        }
+                        break;
+                    
+                    // Controles de escala
+                    case 'Equal': // Tecla +
+                    case 'NumpadAdd':
+                        const scaleSpeed = 0.1;
+                        const currentScale = this.selectedObject.scale.x;
+                        const newScale = Math.min(currentScale + scaleSpeed, 5);
+                        this.selectedObject.scale.set(newScale, newScale, newScale);
+                        break;
+                    case 'Minus': // Tecla -
+                    case 'NumpadSubtract':
+                        const scaleSpeed2 = 0.1;
+                        const currentScale2 = this.selectedObject.scale.x;
+                        const newScale2 = Math.max(currentScale2 - scaleSpeed2, 0.1);
+                        this.selectedObject.scale.set(newScale2, newScale2, newScale2);
+                        break;
+                    
+                    // Eliminar objeto
+                    case 'Delete':
+                        if (this.selectedObject) {
+                            this.deleteObject(this.selectedObject);
+                        }
+                        break;
+                }
+                
+                // Verificar colisión con el suelo después de cualquier transformación
+                
+                // Verificar colisión con el suelo después de cualquier transformación
+                if (this.selectedObject) {
+                    this.checkGroundCollision(this.selectedObject);
+                }
+                
+                this.controls.update();
+            }
+
+            // Función para verificar que el objeto no atraviese el suelo
+            checkGroundCollision(object) {
+                const box = new THREE.Box3().setFromObject(object);
+                const minY = box.min.y;
+                
+                // Si el punto más bajo está por debajo del suelo, ajustar posición
+                if (minY < 0) {
+                    object.position.y += Math.abs(minY);
+                }
+            }
+
+            selectObject(object) {
+                this.deselectAll();
+                
+                this.selectedObject = object;
+                
+                console.log('Object selected:', object.userData.name);
+            }
+
+            deselectAll() {
+                this.selectedObject = null;
+            }
+
+            deleteObject(object) {
+                const index = this.objects.indexOf(object);
+                if (index > -1) {
+                    this.objects.splice(index, 1);
+                }
+                
+                this.scene.remove(object);
+                this.updateObjectList();
+                
+                if (this.selectedObject === object) {
+                    this.selectedObject = null;
+                }
+            }
+
+            clearAllObjects() {
+                this.objects.forEach(obj => {
+                    this.scene.remove(obj);
+                });
+                
+                this.objects = [];
+                this.selectedObject = null;
+                this.updateObjectList();
+            }
+
+            exportScene() {
+                if (this.objects.length === 0) {
+                    alert('No objects to export');
+                    return;
+                }
+
+                const sceneData = {
+                    timestamp: new Date().toISOString(),
+                    objects: this.objects.map(obj => {
+                        const objData = {
+                            name: obj.userData.name,
+                            modelType: obj.userData.modelType || 'unknown',
+                            modelFile: obj.userData.modelFile || null,
+                            mtlFile: obj.userData.mtlFile || null,
+                            position: {
+                                x: obj.position.x,
+                                y: obj.position.y,
+                                z: obj.position.z
+                            },
+                            rotation: {
+                                x: obj.rotation.x,
+                                y: obj.rotation.y,
+                                z: obj.rotation.z
+                            },
+                            scale: {
+                                x: obj.scale.x,
+                                y: obj.scale.y,
+                                z: obj.scale.z
+                            }
+                        };
+                        console.log('Exporting object:', objData);
+                        return objData;
+                    })
+                };
+
+                const dataStr = JSON.stringify(sceneData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `space-habitat-scene-${Date.now()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            async importScene(file) {
+                try {
+                    const text = await file.text();
+                    const sceneData = JSON.parse(text);
+
+                    if (!sceneData.objects || !Array.isArray(sceneData.objects)) {
+                        alert('Invalid scene file format');
+                        return;
+                    }
+
+                    // Limpiar escena actual
+                    this.clearAllObjects();
+
+                    console.log('Importing scene with', sceneData.objects.length, 'objects');
+                    
+                    // Cargar cada objeto según su tipo
+                    let loadedCount = 0;
+                    const totalObjects = sceneData.objects.length;
+                    
+                    for (const objData of sceneData.objects) {
+                        await this.loadObjectFromData(objData);
+                        loadedCount++;
+                    }
+
+                    console.log(`Scene imported successfully! ${loadedCount} objects loaded.`);
+
+                } catch (error) {
+                    console.error('Error importing scene:', error);
+                    alert('Error importing scene: ' + error.message);
+                }
+            }
+
+            async loadObjectFromData(objData) {
+                return new Promise((resolve) => {
+                    console.log('Loading object from data:', objData);
+                    console.log('Model type:', objData.modelType, 'Model file:', objData.modelFile, 'MTL file:', objData.mtlFile);
+                    
+                    const originalSetupLoadedObject = this.setupLoadedObject.bind(this);
+                    
+                    // Sobrescribir temporalmente setupLoadedObject para aplicar transformaciones guardadas
+                    this.setupLoadedObject = (object, name, modelType, modelFile, mtlFile) => {
+                        // Llamar al método original primero
+                        originalSetupLoadedObject(object, name, modelType, modelFile, mtlFile);
+                        
+                        // DESPUÉS aplicar transformaciones guardadas (esto sobrescribe las posiciones/escalas por defecto)
+                        object.position.set(
+                            objData.position.x || 0,
+                            objData.position.y || 0,
+                            objData.position.z || 0
+                        );
+                        
+                        object.rotation.set(
+                            objData.rotation.x || 0,
+                            objData.rotation.y || 0,
+                            objData.rotation.z || 0
+                        );
+                        
+                        object.scale.set(
+                            objData.scale.x || 1,
+                            objData.scale.y || 1,
+                            objData.scale.z || 1
+                        );
+
+                        // Actualizar userData con información preservada
+                        object.userData.originalScale = object.scale.clone();
+                        
+                        console.log('Applied transformations - Position:', object.position, 'Rotation:', object.rotation, 'Scale:', object.scale);
+                        
+                        // Restaurar método original
+                        this.setupLoadedObject = originalSetupLoadedObject;
+                        
+                        resolve();
+                    };
+
+                    // Cargar según el tipo de modelo
+                    if (objData.modelType === 'obj' && objData.modelFile) {
+                        console.log('Loading OBJ model:', objData.modelFile, 'with MTL:', objData.mtlFile);
+                        this.loadDemoModel(objData.modelFile, objData.mtlFile, objData.name);
+                    } else if (objData.modelType === 'glb' && objData.modelFile) {
+                        console.log('Loading GLB model:', objData.modelFile);
+                        this.loadDemoGLB(objData.modelFile, objData.name);
+                    } else {
+                        // Si no hay información del modelo, crear placeholder
+                        console.log('Creating placeholder for:', objData.name);
+                        this.createPlaceholderObject(objData, 0);
+                        resolve();
+                    }
+                });
+            }
+
+            createPlaceholderObject(objData, index) {
+                // Crear un cubo básico como placeholder
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshLambertMaterial({ 
+                    color: Math.random() * 0xffffff 
+                });
+                const object = new THREE.Mesh(geometry, material);
+                
+                // Aplicar transformaciones del JSON
+                object.position.set(
+                    objData.position.x || 0,
+                    objData.position.y || 0,
+                    objData.position.z || 0
+                );
+                
+                object.rotation.set(
+                    objData.rotation.x || 0,
+                    objData.rotation.y || 0,
+                    objData.rotation.z || 0
+                );
+                
+                object.scale.set(
+                    objData.scale.x || 1,
+                    objData.scale.y || 1,
+                    objData.scale.z || 1
+                );
+
+                // Configurar propiedades
+                object.castShadow = true;
+                object.receiveShadow = true;
+                object.userData = {
+                    name: objData.name || `Imported Object ${index + 1}`,
+                    id: Date.now() + index,
+                    originalScale: object.scale.clone(),
+                    isPlaceholder: true
+                };
+
+                // Verificar que no atraviese el suelo
+                this.checkGroundCollision(object);
+
+                this.scene.add(object);
+                this.objects.push(object);
+            }
+
+            // Funciones para cargar modelos de demostración
+            loadDemoModel(objFile, mtlFile, name) {
+                const objPath = `./models/${objFile}`;
+                const mtlPath = mtlFile ? `./models/${mtlFile}` : null;
+                
+                this.showLoading(true);
+                console.log(`Loading demo model: ${objPath}`);
+                
+                // Cargar material primero si existe
+                if (mtlPath) {
+                    this.mtlLoader.load(
+                        mtlPath,
+                        (materials) => {
+                            materials.preload();
+                            this.objLoader.setMaterials(materials);
+                            this.loadObjFile(objPath, name, mtlPath);
+                        },
+                        undefined,
+                        (error) => {
+                            console.warn('MTL load failed, loading OBJ without materials:', error);
+                            this.loadObjFile(objPath, name, mtlPath);
+                        }
+                    );
+                } else {
+                    this.loadObjFile(objPath, name, mtlPath);
+                }
+            }
+
+            loadObjFile(objPath, name, mtlPath = null) {
+                this.objLoader.load(
+                    objPath,
+                    (object) => {
+                        console.log('OBJ loaded successfully:', name);
+                        const modelFile = objPath.split('/').pop();
+                        const mtlFile = mtlPath ? mtlPath.split('/').pop() : null;
+                        this.setupLoadedObject(object, name, 'obj', modelFile, mtlFile);
+                        this.positionNewObject();
+                        this.showLoading(false);
+                    },
+                    (progress) => {
+                        console.log('Loading progress:', progress);
+                    },
+                    (error) => {
+                        console.error('OBJ load error:', error);
+                        let errorMsg = `Network error or file not found: ${objPath}`;
+                        if (error && error.target) {
+                            errorMsg = `Failed to load file: ${objPath} (Status: ${error.target.status || 'unknown'})`;
+                        }
+                        alert(`Failed to load ${name}: ${errorMsg}`);
+                        this.showLoading(false);
+                    }
+                );
+            }
+
+            loadDemoGLB(glbFile, name) {
+                const glbPath = `./models/${glbFile}`;
+                
+                this.showLoading(true);
+                console.log(`Loading demo GLB: ${glbPath}`);
+                
+                this.gltfLoader.load(
+                    glbPath,
+                    (gltf) => {
+                        console.log('GLB loaded successfully:', name);
+                        this.setupLoadedObject(gltf.scene, name, 'glb', glbFile, null);
+                        this.positionNewObject();
+                        this.showLoading(false);
+                    },
+                    (progress) => {
+                        console.log('Loading progress:', progress);
+                    },
+                    (error) => {
+                        console.error('GLB load error:', error);
+                        let errorMsg = `Network error or file not found: ${glbPath}`;
+                        if (error && error.target) {
+                            errorMsg = `Failed to load file: ${glbPath} (Status: ${error.target.status || 'unknown'})`;
+                        }
+                        alert(`Failed to load ${name}: ${errorMsg}`);
+                        this.showLoading(false);
+                    }
+                );
+            }
+
+            setupLoadedObject(object, name, modelType = 'unknown', modelFile = null, mtlFile = null) {
+                // Configurar el objeto
+                object.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+                
+                // Calcular tamaño del objeto y limitarlo a 10x10
+                const box = new THREE.Box3().setFromObject(object);
+                const size = box.getSize(new THREE.Vector3());
+                
+                // Calcular factor de escala para que el modelo no exceda 10x10x10
+                const maxSize = 10;
+                const maxDimension = Math.max(size.x, size.y, size.z);
+                let scaleFactor = 1;
+                
+                if (maxDimension > maxSize) {
+                    scaleFactor = maxSize / maxDimension;
+                }
+                
+                // Aplicar escala primero
+                object.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                
+                // Recalcular bounding box después del escalado
+                const scaledBox = new THREE.Box3().setFromObject(object);
+                const scaledMin = scaledBox.min;
+                
+                // Posicionar el objeto en la superficie (Y = 0 es el suelo)
+                object.position.set(0, -scaledMin.y, 0);
+                
+                object.userData = { 
+                    name: name || '3D Model',
+                    id: Date.now(),
+                    originalScale: object.scale.clone(),
+                    modelType: modelType,
+                    modelFile: modelFile,
+                    mtlFile: mtlFile
+                };
+                
+                this.scene.add(object);
+                this.objects.push(object);
+                this.updateObjectList();
+                
+                console.log('Demo model loaded successfully:', name);
+            }
+
+            positionNewObject() {
+                if (this.objects.length === 0) return;
+                
+                const lastObject = this.objects[this.objects.length - 1];
+                const objectCount = this.objects.length - 1;
+                
+                // Crear una distribución en círculo para evitar superposiciones
+                const radius = 15;
+                const angle = (objectCount * Math.PI * 2) / 6; // Máximo 6 objetos en círculo
+                
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                
+                lastObject.position.x = x;
+                lastObject.position.z = z;
+                
+                // Asegurar que esté en el suelo
+                this.checkGroundCollision(lastObject);
+            }
+
+            updateObjectList() {
+                const listContainer = document.getElementById('object-list');
+                
+                if (this.objects.length === 0) {
+                    listContainer.innerHTML = '<div style="color: #666; text-align: center; padding: 10px;">No objects loaded</div>';
+                    return;
+                }
+                
+                listContainer.innerHTML = this.objects.map(obj => `
+                    <div class="object-item">
+                        <span class="object-name">${obj.userData.name}</span>
+                        <div class="object-controls">
+                            <button class="btn btn-small" onclick="app.selectObjectFromList('${obj.userData.id}')">Select</button>
+                            <button class="btn btn-small danger" onclick="app.deleteObjectFromList('${obj.userData.id}')">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            selectObjectFromList(id) {
+                const object = this.objects.find(obj => obj.userData.id == id);
+                if (object) {
+                    this.selectObject(object);
+                }
+            }
+
+            deleteObjectFromList(id) {
+                const object = this.objects.find(obj => obj.userData.id == id);
+                if (object) {
+                    this.deleteObject(object);
+                }
+            }
+
+            showLoading(show) {
+                document.getElementById('loading').style.display = show ? 'block' : 'none';
+            }
+
+            onWindowResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        // Inicializar la aplicación cuando se carga la página
+        let app;
+        window.addEventListener('DOMContentLoaded', () => {
+            app = new SpaceHabitatBuilder();
+        });
+    </script>
+</body>
+</html>
+

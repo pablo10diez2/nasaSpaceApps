@@ -1,0 +1,236 @@
+{
+  "timestamp": "2025-10-05T02:30:00.000Z",
+  "objects": [
+    {
+      "name": "Wall",
+      "modelType": "glb",
+      "modelFile": "wall.glb",
+      "mtlFile": null,
+      "position": {
+        "x": -10,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Wall",
+      "modelType": "glb",
+      "modelFile": "wall.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 10,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Wall",
+      "modelType": "glb",
+      "modelFile": "wall.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1.5708,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Wall",
+      "modelType": "glb",
+      "modelFile": "wall.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1.5708,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Bed",
+      "modelType": "glb",
+      "modelFile": "bed.glb",
+      "mtlFile": null,
+      "position": {
+        "x": -6,
+        "y": 0,
+        "z": -6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0.7854,
+        "z": 0
+      },
+      "scale": {
+        "x": 1.2,
+        "y": 1,
+        "z": 1.2
+      }
+    },
+    {
+      "name": "Holo Table",
+      "modelType": "glb",
+      "modelFile": "holo-table.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Oven",
+      "modelType": "glb",
+      "modelFile": "oven.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 6,
+        "y": 0,
+        "z": -6
+      },
+      "rotation": {
+        "x": 0,
+        "y": -0.7854,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Sci-Fi Lab",
+      "modelType": "glb",
+      "modelFile": "sci-fi_lab.glb",
+      "mtlFile": null,
+      "position": {
+        "x": -6,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 2.3562,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.8,
+        "y": 1,
+        "z": 0.8
+      }
+    },
+    {
+      "name": "DNA Lab",
+      "modelType": "glb",
+      "modelFile": "dna_lab.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 6,
+        "y": 0,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": -2.3562,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.9,
+        "y": 1,
+        "z": 0.9
+      }
+    },
+    {
+      "name": "Garden",
+      "modelType": "glb",
+      "modelFile": "garden.glb",
+      "mtlFile": null,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -7
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1.5,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "name": "Solar Panel",
+      "modelType": "obj",
+      "modelFile": "10781_Solar-Panels_V1.obj",
+      "mtlFile": "solarPanel.mtl",
+      "position": {
+        "x": 0,
+        "y": 8,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 2,
+        "y": 1,
+        "z": 2
+      }
+    }
+  ]
+}

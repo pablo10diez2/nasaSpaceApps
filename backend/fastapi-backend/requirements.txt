@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-pydantic
-httpx
-pytest
-pytest-asyncio
-pymongo
-python-dotenv
-bson
